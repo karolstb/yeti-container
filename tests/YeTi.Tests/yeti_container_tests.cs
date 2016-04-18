@@ -19,7 +19,7 @@ namespace YeTi.Tests
         [Fact]
         public void resolves_registered_components()
         {
-            //podobno komentarze są złe  lalala
+            //podobno komentarze są złe  lalala 2222
             //Arrange
             var container = new YeTiContainer();
             container.Register<ITestInterface, TestImplementation>();
