@@ -31,6 +31,22 @@ namespace YeTi.Tests
             resolved_object.ShouldBeOfType<TestImplementation>();
         }
 
+        /// <summary>
+        /// testowanie kontenera dla klas z konstruktorami z parametrem
+        /// </summary
+        [TestMethod]
+        [Fact]
+        public void resolves_components_with_ctor_with_params()
+        {
+            var container = new YeTiContainer();
+            container.Register<Dependency, Dependency>();
+            container.Register<ITestInterface, TestImplementationWithDependency>();
+            
+            var resolved_object = container.Resolve<ITestInterface>();
+            
+            resolved_object.ShouldBeOfType<TestImplementationWithDependency>();
+        }
+
         public interface ITestInterface
         {
 
@@ -40,6 +56,19 @@ namespace YeTi.Tests
         public class TestImplementation : ITestInterface
         {
 
+        }
+
+        public class Dependency
+        {
+
+        }
+
+        public class TestImplementationWithDependency : ITestInterface
+        {
+            public TestImplementationWithDependency(Dependency dependency)
+            {
+
+            }
         }
     }
 }

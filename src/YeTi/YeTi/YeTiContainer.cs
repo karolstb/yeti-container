@@ -9,22 +9,35 @@ namespace YeTi
     public class YeTiContainer
     {
         readonly Dictionary<Type, Type> _registrations = new Dictionary<Type, Type>();
-
+        
         public void Register<TRegistration, TImplementation>()
         {
             _registrations.Add(typeof(TRegistration), typeof(TImplementation));
-            _registrations.Add(typeof(String), typeof(Int32));
+            //_registrations.Add(typeof(String), typeof(Int32));
+        }
+
+        object Resolve(Type type)
+        {
+            var requested_type = type;
+
+            Type actual_type = _registrations[requested_type];
+
+            var ctors = actual_type.GetConstructors();
+
+            var ctor = ctors.First();
+
+            IEnumerable<Type> dependencyTypes = ctor.GetParameters().Select(x => x.ParameterType);
+
+            var dependencies = dependencyTypes.Select(c => this.Resolve(c)).ToArray();
+
+            var instance = Activator.CreateInstance(actual_type, dependencies);
+
+            return instance;
         }
 
         public T Resolve<T>()
         {
-            var requested_type = typeof(T);
-
-            Type actual_type = _registrations[requested_type];
-
-            var instance = Activator.CreateInstance(actual_type);
-
-            return (T)instance;
+            return (T)this.Resolve(typeof(T));
         }
     }
 }
